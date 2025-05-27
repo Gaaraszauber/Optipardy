@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Optipardy – Credits</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      min-height: 100vh;
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(135deg, #141e30 0%, #243b55 100%);
+      color: #e3eaf5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .credits-container {
+      background: rgba(30, 41, 59, 0.97);
+      border-radius: 18px;
+      box-shadow: 0 8px 40px rgba(20, 30, 48, 0.7);
+      padding: 2.5em 2em 2em 2em;
+      max-width: 460px;
+      width: 100%;
+      border: 1.5px solid #334e6f;
+      animation: fadeIn 1s;
+      text-align: center;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(40px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+    h1 {
+      color: #90caf9;
+      margin-bottom: 0.5em;
+      font-size: 2em;
+      font-weight: bold;
+      text-shadow: 0 2px 12px #1565c0;
+    }
+    .team-list {
+      list-style: none;
+      padding: 0;
+      margin: 1.3em 0 2em 0;
+      font-size: 1.13em;
+    }
+    .team-list li {
+      margin-bottom: 0.6em;
+      color: #b0c4de;
+      letter-spacing: 0.5px;
+    }
+    .thanks {
+      color: #fbc02d;
+      margin-bottom: 2em;
+      font-size: 1.12em;
+      font-weight: 500;
+    }
+    .btn-back {
+      background: #243b55;
+      color: #90caf9;
+      font-size: 1em;
+      padding: 0.7em 1.5em;
+      border: 1.5px solid #334e6f;
+      border-radius: 7px;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.2s, color 0.2s;
+      margin-top: 1.2em;
+    }
+    .btn-back:hover {
+      background: #141e30;
+      color: #fff;
+    }
+    @media (max-width: 600px) {
+      .credits-container {
+        padding: 1.2em 0.5em 1em 0.5em;
+        max-width: 98vw;
+      }
+      h1 {
+        font-size: 1.3em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="credits-container">
+    <h1>Credits</h1>
+    <div class="thanks">
+      Vielen Dank an alle, die an Optipardy mitgewirkt haben!
+    </div>
+    <ul class="team-list">
+      <li><strong>Konzept &amp; Umsetzung: </strong>Carina Loch und Luna Herbig</li>
+      <li><strong>Fragen &amp; Kategorien: </strong>Carina Loch und Luna Herbig</li>
+      <li><strong>Technische Unterstützung: </strong>Tobias Langer</li>
+      <li><strong>Inspiration: </strong>Frau Rabus-Walter</li>
+      <!-- Ergänze oder ändere die Namen und Rollen nach Bedarf! -->
+    </ul>
+    <div style="font-size:0.98em; color:#b0c4de; margin-bottom:1.5em;">
+      Icons: <a href="https://feathericons.com/" target="_blank" style="color:#90caf9;">Feather Icons</a><br>
+    </div>
+    <a href="/" class="btn-back">Zurück</a>
+  </div>
+</body>
+</html>

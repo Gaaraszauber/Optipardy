@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>Optipardy – Kategorien-Editor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="./css/editor.css" />
+
+  </style>
+</head>
+<body>
+  <div class="editor-container">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2>Kategorien</h2>
+        <button id="newCategoryBtn" class="btn-main">Neue Kategorie</button>
+      </div>
+      <ul id="categoryList"></ul>
+    </aside>
+    <main class="main-editor">
+      <div class="main-header">
+        <h1>Kategorie bearbeiten</h1>
+        <a href="/" class="btn-back">Zurück</a>
+      </div>
+      <form id="categoryForm" autocomplete="off">
+        <label for="categoryName">Kategoriename:</label>
+        <input type="text" id="categoryName" required />
+        <div id="questionList"></div>
+        <button type="button" id="addQuestionBtn" class="btn-green">Frage hinzufügen</button>
+        <div class="form-buttons">
+          <button type="submit" class="btn-main">Speichern</button>
+          <button type="button" id="cancelBtn" class="btn-grey">Abbrechen</button>
+        </div>
+      </form>
+    </main>
+  </div>
+  <script src="js/editor.js"></script>
+</body>
+</html>

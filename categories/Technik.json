@@ -1,0 +1,20 @@
+{
+  "name": "Technik",
+  "questions": [
+    {
+      "question": "Wie nennt man das Rechenzentrum eines Computers?",
+      "answer": "Prozessor",
+      "points": 100
+    },
+    {
+      "question": "Was bedeutet die Abkürzung 'WWW'?",
+      "answer": "World Wide Web",
+      "points": 200
+    },
+    {
+      "question": "Welches Unternehmen entwickelte das erste iPhone?",
+      "answer": "Apple",
+      "points": 300
+    }
+  ]
+}

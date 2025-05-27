@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <title>Optipardy – Willkommen</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" type="text/css"  href="css/index.css" />
+    <style>
+        .btn-danger {
+  background-color: #e53935;
+  color: #fff;
+  border: none;
+  transition: background 0.2s;
+}
+.btn-danger:hover,
+.btn-danger:focus {
+  background-color: #b71c1c;
+  color: #fff;
+}
+
+    </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <img src="icon.png" alt="Optipardy Logo" />
+    </div>
+    <h1>Willkommen zu<br>Optipardy -<br>Sehen &amp; Verstehen!</h1>
+    <!--<p>Wähle eine Option:</p>-->
+    <br>
+    <div class="button-group">
+      <a href="/game" class="btn">Spiel starten</a>
+      <a href="/editor" class="btn">Kategorien-Editor</a>
+      <a href="/credits" class="btn">Credits</a>
+     <!--- <a href="#" id="close-link" class="btn btn-danger">Beenden</a>-->
+    </div>
+    <div class="footer">
+      <span>Optipardy &copy; 2025 &ndash; PAO11A &ndash; Carina Loch und Luna Herbig</a></span>
+    </div>
+  </div>
+  <script>
+  const closeLink = document.getElementById('close-link');
+  if (closeLink && window.electronAPI && window.electronAPI.closeApp) {
+    closeLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.electronAPI.closeApp();
+    });
+  } else {
+    if (closeLink) {
+      closeLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        alert('Beenden ist nur in der Desktop-App möglich.');
+      });
+    }
+  }
+</script>
+
+</body>
+</html>

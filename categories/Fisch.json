@@ -1,0 +1,20 @@
+{
+  "name": "Fisch",
+  "questions": [
+    {
+      "question": "blubb?",
+      "answer": "BLUBB!",
+      "points": 100
+    },
+    {
+      "question": "uf",
+      "answer": "hu",
+      "points": 200
+    },
+    {
+      "question": "hi",
+      "answer": "hi",
+      "points": 9000
+    }
+  ]
+}

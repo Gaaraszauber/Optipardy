@@ -1,0 +1,44 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f2f2f2;
+  margin: 0;
+  padding: 0;
+}
+.container {
+  max-width: 900px;
+  margin: 2em auto;
+  background: #fff;
+  padding: 2em;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.centered {
+  text-align: center;
+  margin-top: 10vh;
+}
+.btn, button.btn {
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  padding: 0.6em 1.4em;
+  border-radius: 6px;
+  font-size: 1em;
+  cursor: pointer;
+  margin: 0.2em;
+  text-decoration: none;
+  display: inline-block;
+  transition: background 0.2s;
+}
+.btn:hover, button.btn:hover {
+  background: #1565c0;
+}
+input[type="text"], input[type="number"], textarea {
+  padding: 0.4em;
+  border: 1px solid #bbb;
+  border-radius: 4px;
+  font-size: 1em;
+}
+label {
+  margin-right: 1.5em;
+}
+hr { margin: 2em 0; }

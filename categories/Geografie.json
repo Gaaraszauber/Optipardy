@@ -1,0 +1,20 @@
+{
+  "name": "Geografie",
+  "questions": [
+    {
+      "question": "Wie heißt die Hauptstadt von Australien?",
+      "answer": "Canberra",
+      "points": 100
+    },
+    {
+      "question": "Welcher Fluss fließt durch Paris?",
+      "answer": "Seine",
+      "points": 200
+    },
+    {
+      "question": "Welcher Kontinent ist der größte der Erde?",
+      "answer": "Asien",
+      "points": 300
+    }
+  ]
+}

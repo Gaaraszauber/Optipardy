@@ -1,0 +1,20 @@
+{
+  "name": "Geschichte",
+  "questions": [
+    {
+      "question": "In welchem Jahr fiel die Berliner Mauer?",
+      "answer": "1989",
+      "points": 100
+    },
+    {
+      "question": "Wer war der erste Bundeskanzler der Bundesrepublik Deutschland?",
+      "answer": "Konrad Adenauer",
+      "points": 200
+    },
+    {
+      "question": "Wie hieß das Schiff, mit dem Kolumbus nach Amerika segelte?",
+      "answer": "Santa Maria",
+      "points": 300
+    }
+  ]
+}

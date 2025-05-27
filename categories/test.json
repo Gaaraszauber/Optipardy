@@ -1,0 +1,15 @@
+{
+  "name": "test",
+  "questions": [
+    {
+      "question": "test",
+      "answer": "test",
+      "points": 100
+    },
+    {
+      "question": "asdasd",
+      "answer": "asdasd",
+      "points": 200
+    }
+  ]
+}
