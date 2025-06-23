@@ -26,11 +26,11 @@ Abhängigkeiten installieren:
 ```
 npm install
 ```
-Server starten:
+Web-Server starten:
 ```
 npm run server
 ```
-Electron-App starten:
+Electron-App Standalone starten:
 ```
 npm start
 ```
