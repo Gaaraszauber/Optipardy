@@ -1,0 +1,30 @@
+{
+  "name": "Grundlagen",
+  "questions": [
+    {
+      "question": "Welche Gesamtbrechzahl hat das Auge?",
+      "answer": "1,336",
+      "points": 100
+    },
+    {
+      "question": "Von wo kommt das Licht (im Normalfall bei Konstruktionen / Skizzen)?",
+      "answer": "von Links",
+      "points": 200
+    },
+    {
+      "question": "Nenne 4 asthenopische Beschwerden.",
+      "answer": "Kopfschmerzen, Schwindel, Übelkeit, juckende Augen",
+      "points": 300
+    },
+    {
+      "question": "Was bedeutet kontrahieren?",
+      "answer": "anspannen",
+      "points": 400
+    },
+    {
+      "question": "Nach welchem Wissenschaftler ist das Normauge benannt? (Voller Name!)",
+      "answer": "Allvar Gullstrand",
+      "points": 500
+    }
+  ]
+}

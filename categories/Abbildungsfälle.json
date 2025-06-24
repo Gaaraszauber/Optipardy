@@ -1,0 +1,30 @@
+{
+  "name": "Abbildungsfälle",
+  "questions": [
+    {
+      "question": "Wie viele Konstruktionsstrahlenpaare gibt es?",
+      "answer": "3",
+      "points": 100
+    },
+    {
+      "question": "Wann werden Knotenpunkte benötigt?",
+      "answer": "Bei unterschiedlichen Medien vor und hinter der Linse",
+      "points": 200
+    },
+    {
+      "question": "Wo liegt der reelle Objektraum?",
+      "answer": "vor H",
+      "points": 300
+    },
+    {
+      "question": "Ein unendlich entferntes Objekt wird durch eine Pluslinse abgebildet. Beschreibe AOGL des Bildes.",
+      "answer": "A: reell, O: im Brennunkt der Linse (in F´), G: stark verkleinert, L: umgekehrt",
+      "points": 400
+    },
+    {
+      "question": "Ein anderer Begriff für das Gauß´sche Gebiet?",
+      "answer": "paraxiales Gebiet",
+      "points": 500
+    }
+  ]
+}
