@@ -35,5 +35,18 @@
     </main>
   </div>
   <script src="js/editor.js"></script>
+<script>
+document.addEventListener('input', function(e) {
+  if (e.target && e.target.classList.contains('punkte-input')) {
+    const max = parseInt(e.target.max, 10);
+    const min = parseInt(e.target.min, 10);
+    let val = parseInt(e.target.value, 10);
+
+    if (val > max) e.target.value = max;
+    if (val < min) e.target.value = min;
+  }
+});
+
+</script>
 </body>
 </html>
