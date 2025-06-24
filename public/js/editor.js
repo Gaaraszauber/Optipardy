@@ -60,7 +60,7 @@ function zeigeFragen(questions) {
     row.innerHTML = `
       <input type="text" placeholder="Frage" value="${q.question || ''}" required>
       <input type="text" placeholder="Antwort" value="${q.answer || ''}" required>
-      <input type="number" placeholder="Punkte" value="${q.points || 100}" min="0" step="100" required>
+	  <input type="number" class="punkte-input" placeholder="Punkte" value="${q.points || 100}" min="0" max="1000" step="100" required>
       <button type="button">Entfernen</button>
     `;
     row.querySelector('button').onclick = () => row.remove();
@@ -74,7 +74,7 @@ document.getElementById('addQuestionBtn').onclick = function() {
   row.innerHTML = `
     <input type="text" placeholder="Frage" required>
     <input type="text" placeholder="Antwort" required>
-    <input type="number" placeholder="Punkte" value="100" min="0" step="100" required>
+	<input type="number" class="punkte-input" placeholder="Punkte" value="100" min="0" max="1000" step="100" required>
     <button type="button">Entfernen</button>
   `;
   row.querySelector('button').onclick = () => row.remove();
