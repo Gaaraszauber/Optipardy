@@ -328,6 +328,10 @@ input[type="checkbox"] {
   border: 2px solid #fbc02d;
   pointer-events: none;
   text-shadow: none;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  white-space: normal;
+  hyphens: auto;
 }
 .board-cell:hover:not(.answered):not(.category) {
   background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);

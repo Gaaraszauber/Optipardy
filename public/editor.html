@@ -5,17 +5,15 @@
   <title>Optipardy – Kategorien-Editor</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="./css/editor.css" />
-
-  </style>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
 </head>
 <body>
   <div class="editor-container">
     <aside class="sidebar">
       <div class="sidebar-header">
-        <h2>Kategorien</h2>
-        <button id="newCategoryBtn" class="btn-main">Neue Kategorie</button>
+        <button id="addTeacherBtn" class="sidebar-main-btn">Neuen Nutzer anlegen</button>
       </div>
-      <ul id="categoryList"></ul>
+      <ul id="categoryList" class="category-tree"></ul>
     </aside>
     <main class="main-editor">
       <div class="main-header">
@@ -29,11 +27,34 @@
         <button type="button" id="addQuestionBtn" class="btn-green">Frage hinzufügen</button>
         <div class="form-buttons">
           <button type="submit" class="btn-main">Speichern</button>
+          <button type="button" id="deleteBtn" class="btn-red">Löschen</button>
           <button type="button" id="cancelBtn" class="btn-grey">Abbrechen</button>
         </div>
       </form>
     </main>
   </div>
+
+  <!-- In game.html, z.B. am Ende des <body> -->
+<div id="folderPopup" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(20,30,48,0.92); z-index:9999; align-items:center; justify-content:center;">
+  <div id="folderPopupContent" style="background:#243b55; border-radius:14px; padding:2em; min-width:320px; max-width:90vw; max-height:90vh; overflow:auto; color:#e3eaf5;">
+    <h2>Kategorien-Ordner auswählen</h2>
+    <div id="folderTree"></div>
+    <button onclick="closeFolderPopup()" style="margin-top:1.5em;">Abbrechen</button>
+  </div>
+</div>
+
   <script src="js/editor.js"></script>
+  <script>
+    document.addEventListener('input', function(e) {
+      if (e.target && e.target.classList.contains('punkte-input')) {
+        const max = parseInt(e.target.max, 10);
+        const min = parseInt(e.target.min, 10);
+        let val = parseInt(e.target.value, 10);
+
+        if (val > max) e.target.value = max;
+        if (val < min) e.target.value = min;
+      }
+    });
+  </script>
 </body>
 </html>

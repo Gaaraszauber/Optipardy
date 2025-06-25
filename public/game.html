@@ -20,9 +20,9 @@
         <h2>Spieleinstellungen</h2>
         <div class="settings-group">
           <label><input type="checkbox" id="allowNegative" checked /> Minuspunkte erlauben</label>
-          <label>Timer (Sekunden): <input type="number" id="timerSetting" value="30" min="5" max="120" /></label>
+          <label>Timer (Sekunden): <input type="number" id="timerSetting" value="30" min="5" max="600" /></label>
           <label><input type="checkbox" id="allowSkip" checked /> Überspringen erlauben</label>
-          <label><input type="checkbox" id="allowOthers" checked /> Andere Teams dürfen raten</label>
+          <label><input type="checkbox" id="allowOthers" checked /> Andere Teams dürfen antworten</label>
         </div>
       </div>
       <div class="lobby-col center">
@@ -70,6 +70,32 @@
       <button id="continueBtn" class="btn" style="margin-top: 0.5em;">Weiter</button>
     </div>
   </div>
+	<script>
+  const timerInput = document.getElementById('timerSetting');
+  timerInput.addEventListener('input', function () {
+    let value = parseInt(this.value, 10);
+    const min = parseInt(this.min, 10);
+    const max = parseInt(this.max, 10);
+
+    if (isNaN(value)) return; // Falls das Feld leer ist
+
+    if (value < min) this.value = min;
+    if (value > max) this.value = max;
+  });
+
+ const tc = document.getElementById('teamCount');
+    tc.addEventListener('input', function () {
+    let value = parseInt(this.value, 10);
+    const min = parseInt(this.min, 10);
+    const max = parseInt(this.max, 10);
+
+    if (isNaN(value)) return; // Falls das Feld leer ist
+
+    if (value < min) this.value = min;
+    if (value > max) this.value = max;
+  });
+
+</script>
   <script src="js/game.js"></script>
   <script src="js/confetti.browser.min.js"></script>
 </body>

@@ -1,0 +1,30 @@
+{
+  "name": "Test",
+  "questions": [
+    {
+      "question": "Ein anderer Begriff für Längenmyopie?",
+      "answer": "Achsenmyopie",
+      "points": 100
+    },
+    {
+      "question": "Welche Form der Myopie birgt die Gefahr der Erblindung?",
+      "answer": "Proggressive Myopie",
+      "points": 200
+    },
+    {
+      "question": "Hat ein myopes Auge einen Brechwertüberschuss oder Brechwertmangel?",
+      "answer": "Brechwertüberschuss",
+      "points": 300
+    },
+    {
+      "question": "Wie verändert sich laut Faustformel die Fehlsichtigkeit nach 1mm Augenlängenzunahme?",
+      "answer": "Die Fehlsichtigkeit steigt um etwa 3,00dpt.",
+      "points": 400
+    },
+    {
+      "question": "Nenne eine zweite Ursache für die Nachtmyopie, neben dem fehlenden Anreiz für die Fernakkommodation.",
+      "answer": "Nächtliche Beleuchtung besteht vorwiegend aus kurzwelligem, blauen Licht, welches im Auge stärker gebrochen wird.",
+      "points": 500
+    }
+  ]
+}
