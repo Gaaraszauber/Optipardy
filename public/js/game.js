@@ -449,10 +449,10 @@ async function ladeKategorienMitDragDrop() {
   kategorien = await res.json();
   alleKategorienNamen = kategorien.map(cat => cat.name);
   ausgewaehlteKategorien = JSON.parse(localStorage.getItem("ausgewaehlteKategorien") || "[]");
-  renderKategorieDragDrop();
+  //renderKategorieDragDrop();
 }
 
-function renderKategorieDragDrop() {
+/*function renderKategorieDragDrop() {
   const allBox = document.getElementById('allCategories');
   const selBox = document.getElementById('selectedCategories');
   if (!allBox || !selBox) return;
@@ -468,7 +468,7 @@ function renderKategorieDragDrop() {
   });
   // Button aktivieren/deaktivieren
   document.getElementById("startGame").disabled = ausgewaehlteKategorien.length === 0;
-}
+}*/
 
 function createCategoryItem(name) {
   const div = document.createElement('div');
@@ -622,12 +622,4 @@ megaConfettiParty(1000); // 4 Sekunden Party!
   document.getElementById("restartGameBtn").onclick = () => location.reload();
   document.getElementById("backToMenuBtn").onclick = () => window.location.href = "/";
 }
-
-
-    // Willkommensbildschirm-Button
-    document.getElementById("backToWelcome").onclick = function () {
-       window.location.href = "/";
-    };
-
-
  
