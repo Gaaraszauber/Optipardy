@@ -247,6 +247,7 @@ input[type="checkbox"] {
   box-shadow: 0 4px 18px #1976d2aa;
   z-index: 1;
 }
+
 .team-badge .team-name {
   font-weight: 700;
   font-size: 1.09em;
@@ -570,4 +571,93 @@ input[type="checkbox"] {
 @media (max-width: 500px) {
   .win-box { padding: 1.2em 0.5em; min-width: 0; font-size: 1em;}
   .win-emoji { font-size: 2.5em; }
+}
+.selected-categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px;
+  background: #25344a;
+  border-radius: 8px;
+  min-height: 44px;
+  max-width: 100%;
+  box-sizing: border-box;
+  width: 100%;
+  border: 5px #1976d2 dotted;
+}
+
+.selected-category-item {
+  background: #1976d2;
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: default;
+  user-select: none;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.18);
+  font-size: 1.07em;
+  white-space: nowrap;
+}
+
+.selected-category-item .remove-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1.2em;
+  line-height: 1;
+  padding: 0;
+  margin-left: 4px;
+  user-select: none;
+  border-radius: 50%;
+  transition: color 0.2s, background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.selected-category-item .remove-btn:hover {
+  color: #ff6b6b;
+  background: #fff2;
+}
+
+
+.team-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 0.7em;
+}
+
+.team-row input[type="text"] {
+  flex: 1 1 120px;
+  min-width: 0;
+  padding: 7px 10px;
+  border-radius: 6px;
+  border: 1px solid #334e6f;
+  background: #243b55;
+  color: #fff;
+  font-size: 1em;
+  outline: none;
+}
+
+.team-row input[type="text"]:focus {
+  border-color: #1976d2;
+  background: #2c3e50;
+}
+
+.team-row .emoji-select {
+  font-size: 1.25em;
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: 1px solid #334e6f;
+  background: #243b55;
+  color: #fff;
+  cursor: pointer;
+  min-width: 48px;
+  width: 70px; /* feste Breite */
 }

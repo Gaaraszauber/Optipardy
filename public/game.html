@@ -1,102 +1,132 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <title>Optipardy – Sehen & Verstehen – Spiel</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="./css/game.css" />
+  <meta charset="utf-8">
+  <title>Optipardy – Sehen & Verstehen</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="stylesheet" href="css/game.css">
+  <link rel="stylesheet" href="css/folder.css">
+  <style>
+    .main-3col-grid {
+      display: flex;
+      gap: 2.5em;
+      width: 100%;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .main-3col {
+      background: rgba(44, 62, 100, 0.85);
+      border-radius: 12px;
+      padding: 1.5em 1em;
+      min-width: 210px;
+      max-width: 320px;
+      flex: 1 1 0;
+      box-shadow: 0 2px 12px #141e3020;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      position: relative;
+      margin-bottom: 1em;
+    }
+    .main-3col.center {
+      min-width: 300px;
+      max-width: 420px;
+      flex: 2 1 0;
+      align-items: center;
+    }
+    @media (max-width: 1100px) {
+      .main-3col-grid { flex-direction: column; gap: 1.5em; align-items: stretch;}
+      .main-3col, .main-3col.center { max-width: 100vw; min-width: 0; width: 100%;}
+    }
+  </style>
 </head>
 <body>
-  <div id="teamPopup"></div>
   <div class="lobby-container" id="settings">
     <div class="lobby-header">
       <span class="header-spacer"></span>
       <h1>Optipardy – Sehen & Verstehen</h1>
-      <a href="/" class="btn" id="backToMenu">Zurück zum Hauptmenü</a>
+      <a href="/" class="btn btn-grey">Zurück zum Hauptmenü</a>
     </div>
-    <div class="lobby-grid">
-      <div class="lobby-col left">
-        <button id="startGame" class="btn" style="margin-bottom:1.5em;">Spiel starten</button>
+    <div class="main-3col-grid">
+      <!-- Linke Spalte: Spieleinstellungen -->
+      <div class="main-3col">
         <h2>Spieleinstellungen</h2>
         <div class="settings-group">
-          <label><input type="checkbox" id="allowNegative" checked /> Minuspunkte erlauben</label>
-          <label>Timer (Sekunden): <input type="number" id="timerSetting" value="30" min="5" max="600" /></label>
-          <label><input type="checkbox" id="allowSkip" checked /> Überspringen erlauben</label>
-          <label><input type="checkbox" id="allowOthers" checked /> Andere Teams dürfen antworten</label>
+          <label>
+            <input type="checkbox" id="allowNegative" checked>
+            Minuspunkte erlauben
+          </label>
+          <label>
+            Timer (Sekunden):
+            <input type="number" id="timerSetting" min="5" max="120" value="30">
+          </label>
+          <label>
+            <input type="checkbox" id="allowSkip" checked>
+            Überspringen erlauben
+          </label>
+          <label>
+            <input type="checkbox" id="allowOthers" checked>
+            Andere Teams dürfen antworten
+          </label>
         </div>
       </div>
-      <div class="lobby-col center">
-        <h2>Kategorien auswählen</h2>
-        <div class="drag-container">
-          <div class="drag-box" id="allCategories">
-            <div class="drag-title">Alle Kategorien</div>
-          </div>
-          <div class="drag-box" id="selectedCategories">
-            <div class="drag-title">Für das Spiel ausgewählt</div>
-          </div>
-        </div>
+      <!-- Mitte: Kategorien -->
+      <div class="main-3col center">
+        <button id="folderSelectorBtn" class="btn" style="margin-bottom:1.2em;">Kategorien auswählen</button>
+        <div class="drag-title" style="margin-bottom:1em;">Für das Spiel ausgewählt</div>
+        <div id="selectedCategories" class="selected-categories"></div>
       </div>
-      <div class="lobby-col right">
-        <label style="margin-bottom:1.5em; font-weight:bold;">
-          Anzahl Teams:
-          <input type="number" id="teamCount" value="3" min="1" max="6" style="width: 60px;" />
-        </label>
+      <!-- Rechte Spalte: Teams -->
+      <div class="main-3col">
         <h2>Teams</h2>
-        <div class="team-list" id="teamSettings"></div>
+        <label>
+          Anzahl Teams:
+          <input type="number" id="teamCount" min="1" max="8" value="2">
+        </label>
+        <div id="teamSettings" class="team-list"></div>
+        <button id="startGame" class="btn btn-green" disabled style="margin-top:1.5em;">Spiel starten</button>
       </div>
     </div>
   </div>
-  <div id="gameArea" style="display: none;">
-  <div class="gamearea-container">
+
+  <div id="gameArea" class="gamearea-container" style="display:none;">
     <div class="gamearea-header">
-      <button id="backToStart" class="btn btn-back-settings">⚙️</button>
-      <div class="teams" id="teams"></div> 
+      <button id="backToStart" class="btn btn-back-settings">Zurück zu den Einstellungen</button>
+      <div id="teams" class="teams"></div>
     </div>
     <div id="board" class="board"></div>
   </div>
-</div>
+
+  <!-- Frage-Modal -->
   <div id="questionModal" class="question-modal">
     <div class="modal-content">
-      <div class="timer" id="timer"></div>
-      <div id="questionText"></div>
-      <input type="text" id="answerInput" placeholder="Antwort eingeben" autocomplete="off"/>
-      <div style="margin-top: 1em;">
-        <button id="submitAnswer" class="btn">Antwort prüfen</button>
-        <button id="skipAnswer" class="btn">Überspringen</button>
-      </div>
+      <div id="timer" class="timer"></div>
+      <div id="questionText" style="font-size:1.3em; margin-bottom:1em;"></div>
+      <input type="text" id="answerInput" placeholder="Antwort eingeben">
       <div id="feedbackMsg"></div>
       <div id="correctAnswer"></div>
-      <button id="markCorrectBtn" class="btn" style="margin-top: 0.5em;">Doch richtig!</button>
-      <button id="continueBtn" class="btn" style="margin-top: 0.5em;">Weiter</button>
+      <button id="submitAnswer" class="btn btn-green" style="margin-top:1em;">Antwort prüfen</button>
+      <button id="skipAnswer" class="btn btn-grey" style="margin-top:1em;">Überspringen</button>
+      <button id="markCorrectBtn" class="btn btn-green" style="margin-top:1em;">Doch richtig!</button>
+      <button id="continueBtn" class="btn btn-main" style="margin-top:1em;">Weiter</button>
     </div>
   </div>
-	<script>
-  const timerInput = document.getElementById('timerSetting');
-  timerInput.addEventListener('input', function () {
-    let value = parseInt(this.value, 10);
-    const min = parseInt(this.min, 10);
-    const max = parseInt(this.max, 10);
 
-    if (isNaN(value)) return; // Falls das Feld leer ist
+  <!-- Team-Popup -->
+  <div id="teamPopup"></div>
 
-    if (value < min) this.value = min;
-    if (value > max) this.value = max;
-  });
+<!-- Kategorie-Ordner-Popup -->
+<div id="folderModal" class="modal">
+  <div class="modal-content">
+    <div class="popup-header">
+      <button class="btn btn-green" id="popupSaveBtn">Speichern</button>
+      <button class="close" title="Schließen">&times;</button>
+    </div>
+    <div id="folderTree"></div>
+  </div>
+</div>
 
- const tc = document.getElementById('teamCount');
-    tc.addEventListener('input', function () {
-    let value = parseInt(this.value, 10);
-    const min = parseInt(this.min, 10);
-    const max = parseInt(this.max, 10);
-
-    if (isNaN(value)) return; // Falls das Feld leer ist
-
-    if (value < min) this.value = min;
-    if (value > max) this.value = max;
-  });
-
-</script>
-  <script src="js/game.js"></script>
-  <script src="js/confetti.browser.min.js"></script>
+  <!-- Hauptmodul -->
+  <script type="module" src="js/game/main.js"></script>
 </body>
 </html>

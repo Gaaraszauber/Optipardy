@@ -1,10 +1,10 @@
 const emojiOptions = [
-    "🐶", "🐱", "🐭", "🐹", "🐰", "🦊", "🐻", "🐼", "🐨", "🐯",
-    "🦁", "🐮", "🐷", "🐸", "🐵", "🐔", "🐧", "🐦", "🐤", "🦆",
-    "🦉", "🦇", "🐺", "🐗", "🐴", "🦄", "🐝", "🐛", "🦋", "🐌",
-    "🐞", "🐢", "🐍", "🦎", "🦖", "🦕", "🐙", "🦑", "🦐", "🦞",
-    "🐠", "🐟", "🐬", "🐳", "🐋", "🦈", "🐊", "🐅", "🐆", "🦓",
-    "🦍", "🐘", "🦏", "🦛", "🐪", "🐫", "🦙", "🦒", "🐃", "🐂", "🐄"
+  "🐶", "🐱", "🐭", "🐹", "🐰", "🦊", "🐻", "🐼", "🐨", "🐯",
+  "🦁", "🐮", "🐷", "🐸", "🐵", "🐔", "🐧", "🐦", "🐤", "🦆",
+  "🦉", "🦇", "🐺", "🐗", "🐴", "🦄", "🐝", "🐛", "🦋", "🐌",
+  "🐞", "🐢", "🐍", "🦎", "🦖", "🦕", "🐙", "🦑", "🦐", "🦞",
+  "🐠", "🐟", "🐬", "🐳", "🐋", "🦈", "🐊", "🐅", "🐆", "🦓",
+  "🦍", "🐘", "🦏", "🦛", "🐪", "🐫", "🦙", "🦒", "🐃", "🐂", "🐄"
 ];
 
 let kategorien = [];
@@ -31,16 +31,89 @@ const feedbackMsg = document.getElementById("feedbackMsg");
 const correctAnswerDiv = document.getElementById("correctAnswer");
 const answerInput = document.getElementById("answerInput");
 
-function showTeamPopup() {
-  const popup = document.getElementById("teamPopup");
-  const team = teams[currentTeam];
-  popup.textContent = `${team.logo} ${team.name} ist dran!`;
-  popup.classList.add("show");
-  setTimeout(() => {
-    popup.classList.remove("show");
-  }, 2000);
+// --- Kategorien-Auswahl nur über Popup ---
+let ausgewaehlteKategorien = [];
+
+function renderSelectedCategories() {
+  const container = document.getElementById("selectedCategories");
+  container.innerHTML = '';
+  ausgewaehlteKategorien.forEach(cat => {
+    const item = document.createElement("div");
+    item.className = "category-item";
+    item.textContent = cat.name;
+    container.appendChild(item);
+  });
+  document.getElementById("startGame").disabled = ausgewaehlteKategorien.length === 0;
 }
 
+// Wird vom Popup aufgerufen
+window.addToSelectedCategories = function(category) {
+  // Keine Duplikate
+  if (!ausgewaehlteKategorien.some(c => c.name === category.name)) {
+    ausgewaehlteKategorien.push(category);
+    renderSelectedCategories();
+  }
+};
+
+// --- Ordnerauswahl-Logik ---
+document.addEventListener("DOMContentLoaded", () => {
+  // Modal-Elemente
+  const folderModal = document.getElementById("folderModal");
+  const folderTree = document.getElementById("folderTree");
+  const closeBtn = document.querySelector("#folderModal .close");
+
+  document.getElementById("folderSelectorBtn").addEventListener("click", async () => {
+    try {
+      const response = await fetch('/api/categories');
+      const treeData = await response.json();
+      renderFolderTree(treeData);
+      folderModal.style.display = "flex";
+    } catch (error) {
+      alert("Ordnerstruktur konnte nicht geladen werden!");
+    }
+  });
+
+  closeBtn.addEventListener("click", () => folderModal.style.display = "none");
+  window.addEventListener("click", (e) => {
+    if (e.target === folderModal) folderModal.style.display = "none";
+  });
+
+  function renderFolderTree(data, parentElement = folderTree) {
+    parentElement.innerHTML = '';
+    if (!data.length) {
+      parentElement.innerHTML = '<div class="empty">Keine Kategorien gefunden</div>';
+      return;
+    }
+    data.forEach(item => {
+      const node = document.createElement("div");
+      node.className = "folder-node";
+      if (item.type === "folder") {
+        node.innerHTML = `<span class="toggle">▶</span> ${item.name}`;
+        const childrenContainer = document.createElement("div");
+        childrenContainer.className = "folder-children";
+        node.appendChild(childrenContainer);
+        node.querySelector(".toggle").addEventListener("click", () => {
+          childrenContainer.classList.toggle("expanded");
+          node.querySelector(".toggle").textContent = childrenContainer.classList.contains("expanded") ? "▼" : "▶";
+        });
+        if (item.children) renderFolderTree(item.children, childrenContainer);
+      } else if (item.type === "file") {
+        node.innerHTML = `${item.name} <button class="select-category" data-category='${JSON.stringify(item)}'>Auswählen</button>`;
+      }
+      parentElement.appendChild(node);
+    });
+    // Kategorieauswahl
+    folderTree.querySelectorAll(".select-category").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        const category = JSON.parse(e.target.dataset.category);
+        window.addToSelectedCategories(category);
+        folderModal.style.display = "none";
+      });
+    });
+  }
+});
+
+// --- Teams und Spiel-Logik ---
 function renderTeamSettings() {
   const count = Number(document.getElementById("teamCount").value);
   const container = document.getElementById("teamSettings");
@@ -52,36 +125,25 @@ function renderTeamSettings() {
   for (let i = 0; i < count; i++) {
     const div = document.createElement("div");
     div.style.marginBottom = "0.5em";
-    let emojiSelect = `<select id="teamLogo${i}" required>`;
-    emojiOptions.forEach((e) => {
-      emojiSelect += `<option value="${e}"${
-        saved[i] && saved[i].logo === e ? " selected" : ""
-      }>${e}</option>`;
+    let emojiSelect = `<select id="teamLogo${i}" class="emoji-select">`;
+    emojiOptions.forEach(emoji => {
+      emojiSelect += `<option value="${emoji}">${emoji}</option>`;
     });
     emojiSelect += "</select>";
     div.innerHTML = `
-      <label>Team ${i + 1} Name:
-        <input type="text" id="teamName${i}" value="${
-          saved[i] ? saved[i].name : "Team " + (i + 1)
-        }" required style="width:120px;">
-      </label>
-      <label> Emoji-Logo: ${emojiSelect}</label>
+      <input type="text" id="teamName${i}" placeholder="Team ${i + 1}" value="${saved[i]?.name || ""}">
+      ${emojiSelect}
     `;
+    if (saved[i]?.logo) {
+      div.querySelector(`#teamLogo${i}`).value = saved[i].logo;
+    }
     container.appendChild(div);
   }
 }
-
 document.addEventListener("DOMContentLoaded", () => {
-  document
-    .getElementById("teamCount")
-    .addEventListener("input", renderTeamSettings);
+  document.getElementById("teamCount").addEventListener("input", renderTeamSettings);
   renderTeamSettings();
 });
-
-async function ladeKategorien() {
-  const res = await fetch("/api/categories");
-  kategorien = await res.json();
-}
 
 function setupTeams(count) {
   teams = [];
@@ -98,20 +160,87 @@ function renderTeams() {
   teams.forEach((team, idx) => {
     const badge = document.createElement("div");
     badge.className = "team-badge" + (idx === currentTeam ? " active" : "");
-    badge.innerHTML = `
-      <span class="team-name">${team.logo} ${team.name}</span>
-      <span class="team-score">${team.score}</span>
-    `;
+    badge.innerHTML = `<span class="team-name">${team.logo} ${team.name}</span>
+      <span class="team-score">${team.score}</span>`;
     el.appendChild(badge);
   });
 }
 
+function showTeamPopup() {
+  const popup = document.getElementById("teamPopup");
+  const team = teams[currentTeam];
+  popup.textContent = `${team.logo} ${team.name} ist dran!`;
+  popup.classList.add("show");
+  setTimeout(() => {
+    popup.classList.remove("show");
+  }, 2000);
+}
+
+// --- Spielstart ---
+document.getElementById("startGame").onclick = async function () {
+  if (ausgewaehlteKategorien.length === 0) {
+    alert("Bitte wähle mindestens eine Kategorie aus!");
+    return;
+  }
+  // Lade alle Kategorien vom Server und filtere nach Auswahl
+  const res = await fetch('/api/game-categories');
+  const allCategories = await res.json();
+  kategorien = allCategories.filter(cat =>
+    ausgewaehlteKategorien.some(sel => sel.name === cat.name)
+  );
+  setupTeams(Number(document.getElementById("teamCount").value));
+  minuspunkte = document.getElementById("allowNegative").checked;
+  allowSkip = document.getElementById("allowSkip").checked;
+  allowOthers = document.getElementById("allowOthers").checked;
+  timerLimit = Number(document.getElementById("timerSetting").value);
+  currentTeam = 0;
+  gameStarted = true;
+  // Reset Fragen
+  kategorien.forEach(cat => {
+    cat.questions.forEach(q => {
+      q.answered = false;
+      q.answeredBy = null;
+    });
+  });
+  buildBoard();
+  renderTeams();
+  showTeamPopup();
+  document.getElementById("settings").style.display = "none";
+  document.getElementById("gameArea").style.display = "";
+  // Speichern
+  lastTeamSettings = [];
+  for (let i = 0; i < teams.length; i++) {
+    lastTeamSettings.push({
+      name: teams[i].name,
+      logo: teams[i].logo,
+    });
+  }
+  localStorage.setItem("teamSettings", JSON.stringify(lastTeamSettings));
+};
+
+document.getElementById("backToStart").onclick = function () {
+  document.getElementById("settings").style.display = "";
+  document.getElementById("gameArea").style.display = "none";
+  let saved = [];
+  try {
+    saved = JSON.parse(localStorage.getItem("teamSettings")) || [];
+  } catch {}
+  for (let i = 0; i < saved.length; i++) {
+    if (document.getElementById(`teamName${i}`)) {
+      document.getElementById(`teamName${i}`).value = saved[i].name;
+      document.getElementById(`teamLogo${i}`).value = saved[i].logo;
+    }
+  }
+};
+
+// --- Spielfeld-Board bauen ---
 function buildBoard() {
   const el = document.getElementById("board");
   let maxQuestions = Math.max(...kategorien.map((k) => k.questions.length));
   el.style.gridTemplateColumns = `repeat(${kategorien.length}, 1fr)`;
   el.style.gridTemplateRows = `repeat(${maxQuestions + 1}, auto)`;
   el.innerHTML = "";
+
   // Kategorie-Header
   kategorien.forEach((cat) => {
     const header = document.createElement("div");
@@ -119,6 +248,7 @@ function buildBoard() {
     header.textContent = cat.name;
     el.appendChild(header);
   });
+
   // Fragen
   for (let row = 0; row < maxQuestions; row++) {
     for (let col = 0; col < kategorien.length; col++) {
@@ -126,12 +256,13 @@ function buildBoard() {
       const q = cat.questions[row];
       const cell = document.createElement("div");
       cell.className = "board-cell";
+
       if (q) {
         // Teamlogo statt durchgestrichen, wenn beantwortet
         if (q.answered) {
           if (typeof q.answeredBy === "number" && teams[q.answeredBy]) {
             cell.classList.add("answered-team");
-            cell.innerHTML = `<span class="team-logo-cell" title="${teams[q.answeredBy].name}">${teams[q.answeredBy].logo}</span>`;
+            cell.innerHTML = `<div class="team-logo-cell">${teams[q.answeredBy].logo}</div>`;
           } else {
             cell.classList.add("answered");
           }
@@ -151,6 +282,7 @@ function buildBoard() {
   }
 }
 
+// --- Frage öffnen ---
 function openQuestion(col, row) {
   if (!gameStarted) return;
   const q = kategorien[col].questions[row];
@@ -166,6 +298,7 @@ function openQuestion(col, row) {
   showModal(q.question, timerLimit);
 }
 
+// --- Frage-Modal anzeigen ---
 function showModal(question, timerSec) {
   document.getElementById("questionText").textContent = question;
   document.getElementById("answerInput").value = "";
@@ -208,6 +341,7 @@ function showModal(question, timerSec) {
   }, 1000);
 }
 
+// --- Modal schließen ---
 function closeModal() {
   document.getElementById("questionModal").style.display = "none";
   clearInterval(timerInterval);
@@ -221,6 +355,7 @@ function closeModal() {
   waitForGamemaster = false;
 }
 
+// --- Richtige Antwort anzeigen ---
 function showCorrectAnswer() {
   correctAnswerDiv.textContent = `Richtige Antwort: ${currentQuestion.q.answer}`;
   correctAnswerDiv.style.display = "block";
@@ -233,14 +368,16 @@ function showCorrectAnswer() {
   document.getElementById("skipAnswer").disabled = true;
 }
 
+// --- Antwort prüfen ---
 function handleAnswer() {
   if (timerExpired || waitForGamemaster) return;
   const answer = document.getElementById("answerInput").value.trim().toLowerCase();
   const correct = currentQuestion.q.answer.trim().toLowerCase();
+
   if (answer === correct) {
     teams[currentTeam].score += currentQuestion.q.points;
-    currentQuestion.q.answered = true;          
-    currentQuestion.q.answeredBy = currentTeam;  
+    currentQuestion.q.answered = true;
+    currentQuestion.q.answeredBy = currentTeam;
     closeModal();
     currentTeam = nextStartingTeam;
     renderTeams();
@@ -264,15 +401,16 @@ function handleAnswer() {
   }
 }
 
+// --- Überspringen ---
 function handleSkip() {
   if (timerExpired || waitForGamemaster) return;
   if (!allowSkip) return;
-  if (currentTeam === selectingTeam && alreadyTriedTeams.length === 0) {
-    return;
-  }
+  if (currentTeam === selectingTeam && alreadyTriedTeams.length === 0) return;
+
   alreadyTriedTeams.push(currentTeam);
   feedbackMsg.textContent = "";
   markCorrectBtn.style.display = "none";
+
   if (allowOthers) {
     if (alreadyTriedTeams.length < teams.length) {
       let found = false;
@@ -284,6 +422,7 @@ function handleSkip() {
           break;
         }
       } while (currentTeam !== startTeam);
+
       if (found) {
         renderTeams();
         showTeamPopup();
@@ -293,7 +432,7 @@ function handleSkip() {
         showModal(currentQuestion.q.question, timerLimit);
       } else {
         currentQuestion.q.answered = true;
-        currentQuestion.q.answeredBy = null; // <-- Niemand richtig
+        currentQuestion.q.answeredBy = null;
         buildBoard();
         checkGameEnd();
         showCorrectAnswer();
@@ -314,6 +453,7 @@ function handleSkip() {
   }
 }
 
+// --- Weiter-Button (nach Antwort) ---
 function handleContinue() {
   if (correctAnswerDiv.style.display === "block") {
     closeModal();
@@ -326,17 +466,19 @@ function handleContinue() {
     showTeamPopup();
     return;
   }
+
   if (!waitForGamemaster && !timerExpired) return;
+
   if (timerExpired && minuspunkte) {
     teams[currentTeam].score -= Math.floor(currentQuestion.q.points / 2);
-    feedbackMsg.textContent = `Zeit abgelaufen! -${Math.floor(
-      currentQuestion.q.points / 2
-    )} Punkte für ${teams[currentTeam].name}`;
+    feedbackMsg.textContent = `Zeit abgelaufen! -${Math.floor(currentQuestion.q.points / 2)} Punkte für ${teams[currentTeam].name}`;
   }
+
   markCorrectBtn.style.display = "none";
   continueBtn.style.display = "none";
   waitForGamemaster = false;
   timerExpired = false;
+
   if (allowOthers) {
     if (alreadyTriedTeams.length >= teams.length) {
       showCorrectAnswer();
@@ -361,6 +503,7 @@ function handleContinue() {
   }
 }
 
+// --- "Doch richtig!"-Button ---
 markCorrectBtn.onclick = function () {
   if (!waitForGamemaster) return;
   if (minuspunkte && alreadyTriedTeams.includes(currentTeam) && !dochRichtigUsed) {
@@ -368,7 +511,7 @@ markCorrectBtn.onclick = function () {
   }
   teams[currentTeam].score += currentQuestion.q.points;
   currentQuestion.q.answered = true;
-  currentQuestion.q.answeredBy = currentTeam; // <-- NEU
+  currentQuestion.q.answeredBy = currentTeam;
   closeModal();
   currentTeam = nextStartingTeam;
   renderTeams();
@@ -378,10 +521,12 @@ markCorrectBtn.onclick = function () {
   dochRichtigUsed = true;
 };
 
+// --- Weiter zum nächsten Team ---
 function nextTeam() {
   currentTeam = (currentTeam + 1) % teams.length;
 }
 
+// --- Event-Handler ---
 document.getElementById("submitAnswer").onclick = handleAnswer;
 document.getElementById("skipAnswer").onclick = handleSkip;
 continueBtn.onclick = handleContinue;
@@ -393,233 +538,40 @@ answerInput.addEventListener("keydown", function(e) {
   }
 });
 
-document.getElementById("startGame").onclick = async function () {
-  await ladeKategorienMitDragDrop();
-  if (ausgewaehlteKategorien.length === 0) {
-    alert("Bitte wähle mindestens eine Kategorie aus, bevor du das Spiel startest!");
-    return;
-  }
-  kategorien = kategorien.filter(cat => ausgewaehlteKategorien.includes(cat.name));
-  setupTeams(Number(document.getElementById("teamCount").value));
-  minuspunkte = document.getElementById("allowNegative").checked;
-  allowSkip = document.getElementById("allowSkip").checked;
-  allowOthers = document.getElementById("allowOthers").checked;
-  timerLimit = Number(document.getElementById("timerSetting").value);
-  currentTeam = 0;
-  gameStarted = true;
-  kategorien.forEach((cat) => cat.questions.forEach((q) => {
-    q.answered = false;
-    q.answeredBy = null;
-  }));
-  buildBoard();
-  renderTeams();
-  showTeamPopup();
-  document.getElementById("settings").style.display = "none";
-  document.getElementById("gameArea").style.display = "";
-  lastTeamSettings = [];
-  for (let i = 0; i < teams.length; i++) {
-    lastTeamSettings.push({
-      name: teams[i].name,
-      logo: teams[i].logo,
-    });
-  }
-  localStorage.setItem("teamSettings", JSON.stringify(lastTeamSettings));
-};
-
-document.getElementById("backToStart").onclick = function () {
-  document.getElementById("settings").style.display = "";
-  document.getElementById("gameArea").style.display = "none";
-  let saved = [];
-  try {
-    saved = JSON.parse(localStorage.getItem("teamSettings")) || [];
-  } catch {}
-  for (let i = 0; i < saved.length; i++) {
-    if (document.getElementById(`teamName${i}`)) {
-      document.getElementById(`teamName${i}`).value = saved[i].name;
-      document.getElementById(`teamLogo${i}`).value = saved[i].logo;
-    }
-  }
-};
-// --- Drag & Drop Kategorie-Auswahl ---
-let alleKategorienNamen = [];
-let ausgewaehlteKategorien = [];
-
-async function ladeKategorienMitDragDrop() {
-  const res = await fetch("/api/categories");
-  kategorien = await res.json();
-  alleKategorienNamen = kategorien.map(cat => cat.name);
-  ausgewaehlteKategorien = JSON.parse(localStorage.getItem("ausgewaehlteKategorien") || "[]");
-  //renderKategorieDragDrop();
-}
-
-/*function renderKategorieDragDrop() {
-  const allBox = document.getElementById('allCategories');
-  const selBox = document.getElementById('selectedCategories');
-  if (!allBox || !selBox) return;
-  allBox.querySelectorAll('.category-item').forEach(e => e.remove());
-  selBox.querySelectorAll('.category-item').forEach(e => e.remove());
-  alleKategorienNamen.forEach(cat => {
-    if (!ausgewaehlteKategorien.includes(cat)) {
-      allBox.appendChild(createCategoryItem(cat));
-    }
-  });
-  ausgewaehlteKategorien.forEach(cat => {
-    selBox.appendChild(createCategoryItem(cat));
-  });
-  // Button aktivieren/deaktivieren
-  document.getElementById("startGame").disabled = ausgewaehlteKategorien.length === 0;
-}*/
-
-function createCategoryItem(name) {
-  const div = document.createElement('div');
-  div.className = 'category-item';
-  div.textContent = name;
-  div.draggable = true;
-  div.addEventListener('dragstart', e => {
-    div.classList.add('dragging');
-    e.dataTransfer.setData('text/plain', name);
-    e.dataTransfer.effectAllowed = 'move';
-  });
-  div.addEventListener('dragend', () => {
-    div.classList.remove('dragging');
-  });
-  return div;
-}
-
-['allCategories', 'selectedCategories'].forEach(boxId => {
-  document.addEventListener("DOMContentLoaded", () => {
-    const box = document.getElementById(boxId);
-    if (!box) return;
-    box.addEventListener('dragover', e => {
-      e.preventDefault();
-      box.classList.add('drag-over');
-    });
-    box.addEventListener('dragleave', () => {
-      box.classList.remove('drag-over');
-    });
-    box.addEventListener('drop', e => {
-      e.preventDefault();
-      box.classList.remove('drag-over');
-      const catName = e.dataTransfer.getData('text/plain');
-      if (boxId === 'selectedCategories') {
-        if (!ausgewaehlteKategorien.includes(catName)) {
-          ausgewaehlteKategorien.push(catName);
-        }
-      } else {
-        ausgewaehlteKategorien = ausgewaehlteKategorien.filter(c => c !== catName);
-      }
-      localStorage.setItem("ausgewaehlteKategorien", JSON.stringify(ausgewaehlteKategorien));
-      renderKategorieDragDrop();
-    });
-  });
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-  ladeKategorienMitDragDrop();
-});
-
+// --- Spiel-Ende prüfen ---
 function checkGameEnd() {
-  // Alle Fragen aus allen ausgewählten Kategorien
   const allQuestions = kategorien.flatMap(cat => cat.questions);
-  // Sind alle beantwortet?
   const allAnswered = allQuestions.every(q => q.answered);
   if (allAnswered) {
     showWinner();
   }
 }
 
+// --- Gewinner anzeigen ---
 function showWinner() {
-  // Finde das Team mit den meisten Punkten (score als Zahl!)
   let maxPoints = Math.max(...teams.map(team => Number(team.score) || 0));
   let winners = teams.filter(team => Number(team.score) === maxPoints);
-
   let msg = "";
   let emoji = "🎉";
   if (winners.length === 1) {
     msg = `<b>${winners[0].name}</b> hat mit <b>${maxPoints}</b> Punkten gewonnen!`;
     emoji = winners[0].logo || "🎉";
   } else {
-    msg = `Unentschieden zwischen: ${winners.map(t => "<b>" + t.name + "</b>").join(", ")}<br>mit <b>${maxPoints}</b> Punkten!`;
+    msg = `Unentschieden zwischen: ${winners.map(t => "<b>" + t.name + "</b>").join(", ")} mit <b>${maxPoints}</b> Punkten!`;
     emoji = "🤝";
   }
-
-  // Modal bauen
+  // Modal erstellen
   const modal = document.createElement("div");
   modal.className = "win-modal";
   modal.innerHTML = `
     <div class="win-box">
       <div class="win-emoji">${emoji}</div>
-      <div style="font-size:1.3em; font-weight:bold; margin-bottom:0.6em;">Spiel beendet!</div>
-      <div style="margin-bottom:1.2em;">${msg}</div>
+      <div class="win-message">${msg}</div>
       <div class="win-btns">
-        <button id="restartGameBtn">Neues Spiel</button>
-        <button id="backToMenuBtn">Zurück zum Menü</button>
+        <button onclick="location.reload()">Neues Spiel</button>
+        <button onclick="document.querySelector('.win-modal').remove()">Schließen</button>
       </div>
     </div>
   `;
   document.body.appendChild(modal);
-
-   // Canvas erstellen und an body anhängen
-// Konfetti-Canvas nur einmal pro Seite anlegen!
-let confettiCanvas, myConfetti;
-function initConfetti() {
-  if (!confettiCanvas) {
-    confettiCanvas = document.createElement('canvas');
-    confettiCanvas.style.position = 'fixed';
-    confettiCanvas.style.top = '0';
-    confettiCanvas.style.left = '0';
-    confettiCanvas.style.width = '100vw';
-    confettiCanvas.style.height = '100vh';
-    confettiCanvas.style.pointerEvents = 'none';
-    confettiCanvas.style.zIndex = '100000';
-    document.body.appendChild(confettiCanvas);
-    myConfetti = confetti.create(confettiCanvas, { resize: true, useWorker: true });
-  }
 }
-
-// Viel Konfetti für 3 Sekunden aus allen Richtungen!
-function megaConfettiParty(duration = 3000) {
-  initConfetti();
-  const end = Date.now() + duration;
-  (function frame() {
-    // Links
-    myConfetti({
-      particleCount: 14,
-      angle: 60,
-      spread: 80,
-      origin: { x: 0, y: Math.random() * 0.6 + 0.2 }
-    });
-    // Rechts
-    myConfetti({
-      particleCount: 14,
-      angle: 120,
-      spread: 80,
-      origin: { x: 1, y: Math.random() * 0.6 + 0.2 }
-    });
-    // Mitte oben
-    myConfetti({
-      particleCount: 20,
-      angle: 90,
-      spread: 160,
-      origin: { x: 0.5, y: 0 }
-    });
-    // Unten
-    myConfetti({
-      particleCount: 8,
-      angle: 270,
-      spread: 100,
-      origin: { x: Math.random(), y: 1 }
-    });
-    if (Date.now() < end) {
-      requestAnimationFrame(frame);
-    }
-  })();
-}
-megaConfettiParty(1000); // 4 Sekunden Party!
-
-
-  // Buttons
-  document.getElementById("restartGameBtn").onclick = () => location.reload();
-  document.getElementById("backToMenuBtn").onclick = () => window.location.href = "/";
-}
- 
