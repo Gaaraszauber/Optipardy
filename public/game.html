@@ -58,7 +58,7 @@
           </label>
           <label>
             Timer (Sekunden):
-            <input type="number" id="timerSetting" min="5" max="120" value="30">
+            <input type="number" id="timerSetting" min="5" max="600" value="30">
           </label>
           <label>
             <input type="checkbox" id="allowSkip" checked>
@@ -81,7 +81,7 @@
         <h2>Teams</h2>
         <label>
           Anzahl Teams:
-          <input type="number" id="teamCount" min="1" max="8" value="2">
+          <input type="number" id="teamCount" min="1" max="6" value="2">
         </label>
         <div id="teamSettings" class="team-list"></div>
         <button id="startGame" class="btn btn-green" disabled style="margin-top:1.5em;">Spiel starten</button>
@@ -128,5 +128,31 @@
 
   <!-- Hauptmodul -->
   <script type="module" src="js/game/main.js"></script>
+  <script>
+  const timerInput = document.getElementById('timerSetting');
+  timerInput.addEventListener('input', function () {
+    let value = parseInt(this.value, 10);
+    const min = parseInt(this.min, 10);
+    const max = parseInt(this.max, 10);
+
+    if (isNaN(value)) return; // Falls das Feld leer ist
+
+    if (value < min) this.value = min;
+    if (value > max) this.value = max;
+  });
+
+ const tc = document.getElementById('teamCount');
+    tc.addEventListener('input', function () {
+    let value = parseInt(this.value, 10);
+    const min = parseInt(this.min, 10);
+    const max = parseInt(this.max, 10);
+
+    if (isNaN(value)) return; // Falls das Feld leer ist
+
+    if (value < min) this.value = min;
+    if (value > max) this.value = max;
+  });
+
+  </script>
 </body>
 </html>

@@ -12,13 +12,13 @@
       "points": 200
     },
     {
-      "question": "Wo liegt der reelle Bildraum?",
+      "question": "Wo liegt der reelle Objektraum?",
       "answer": "vor H",
       "points": 300
     },
     {
       "question": "Ein unendlich entferntes Objekt wird durch eine Pluslinse abgebildet. Beschreibe AOGL des Bildes.",
-      "answer": "A: reell, O: im Brennunkt der Linse (in F´), G: stark verkleinert, L: umgekehrt",
+      "answer": "A: reell, O: im Brennunkt der Linse, G: stark verkleinert, L: umgekehrt",
       "points": 400
     },
     {

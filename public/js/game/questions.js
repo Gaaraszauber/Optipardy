@@ -11,9 +11,7 @@ let currentQuestion = null;
 let selectingTeam = 0;
 let nextStartingTeam = 0;
 
-// questions.js
-
-// Lokale State-Variablen
+// State-Variablen
 let kategorien = [];
 let teams = [];
 let currentTeam = 0;
@@ -22,47 +20,24 @@ let allowSkip = true;
 let allowOthers = true;
 let timerLimit = 30;
 
-// Callbacks, die von main.js gesetzt werden können
+// Callbacks
 let onTeamsUpdate = () => {};
 let onBoardUpdate = () => {};
 let onGameEnd = () => {};
 let onTeamPopup = () => {};
 
-/**
- * Initialisiert das Frage-Modal und den State für die Fragerunde.
- * @param {Object} options - Übergibt alle nötigen Daten und Callbacks.
- *   - kategorien: Array der Kategorien
- *   - teams: Array der Teams
- *   - minuspunkte: Boolean
- *   - allowSkip: Boolean
- *   - allowOthers: Boolean
- *   - timerLimit: Number
- *   - onTeamsUpdate: Funktion, wird nach jedem Teamwechsel aufgerufen
- *   - onBoardUpdate: Funktion, wird nach jeder Board-Änderung aufgerufen
- *   - onGameEnd: Funktion, wird am Spielende aufgerufen
- *   - onTeamPopup: Funktion, zeigt das "Team X ist dran"-Popup an
- */
 export function setupQuestionModal(options) {
-  // Übernehme alle Optionen
   kategorien = options.kategorien;
   teams = options.teams;
-  currentTeam = options.currentTeam || 0; // Wichtig: Standardwert setzen
+  currentTeam = options.currentTeam || 0;
   minuspunkte = options.minuspunkte;
   allowSkip = options.allowSkip;
   allowOthers = options.allowOthers;
   timerLimit = options.timerLimit;
-  
-  // Callbacks für UI-Updates
   onTeamsUpdate = options.onTeamsUpdate || (() => {});
   onBoardUpdate = options.onBoardUpdate || (() => {});
   onGameEnd = options.onGameEnd || (() => {});
-  
-  // Spezielles Callback für Team-Popup
   onTeamPopup = options.onTeamPopup || (() => {});
-  
-  // Stelle sicher, dass das initiale Team sofort korrekt angezeigt wird
-  onTeamsUpdate();
-  onTeamPopup();
 }
 
 export function openQuestion(col, row) {
@@ -119,6 +94,7 @@ function showModal(question, timerSec) {
       }
     }
   }, 1000);
+  updateButtonVisibility(); 
 }
 
 function closeModal() {
@@ -145,9 +121,8 @@ function showCorrectAnswer() {
   document.getElementById("answerInput").disabled = true;
   document.getElementById("skipAnswer").disabled = true;
 }
-
 function handleAnswer() {
- if (timerExpired || waitForGamemaster) return;
+  if (timerExpired || waitForGamemaster) return;
   const answer = document.getElementById("answerInput").value.trim().toLowerCase();
   const correct = currentQuestion.q.answer.trim().toLowerCase();
 
@@ -157,25 +132,11 @@ function handleAnswer() {
     currentQuestion.q.answeredBy = currentTeam;
     closeModal();
     
-    // ⚠️ WICHTIGE KORREKTUR: Teamwechsel-Logik
-    // 1. Aktuelles Team speichern (für Debugging)
-    const oldTeam = currentTeam;
-    
-    // 2. Team WECHSELN (unbedingt VOR UI-Update)
+    // Team wechseln und UI sofort aktualisieren
     currentTeam = nextStartingTeam;
-    
-    // 3. Debug-Ausgabe
-    console.log("Teamwechsel:", 
-      `Altes Team: ${oldTeam}`, 
-      `Neues Team: ${currentTeam}`, 
-      `NextStartingTeam: ${nextStartingTeam}`
-    );
-    
-    // 4. UI SOFORT mit NEUEM Team aktualisieren
     renderTeams(teams, currentTeam);
     showTeamPopup(teams, currentTeam);
     
-    // 5. Board aktualisieren
     onBoardUpdate();
     checkGameEnd();
   } else {
@@ -193,6 +154,7 @@ function handleAnswer() {
     clearInterval(timerInterval);
     dochRichtigUsed = false;
   }
+  updateButtonVisibility(); 
 }
 
 function handleSkip() {
@@ -217,8 +179,10 @@ function handleSkip() {
       } while (currentTeam !== startTeam);
 
       if (found) {
-        onTeamsUpdate();
+        // ⭐⭐ UI SOFORT aktualisieren ⭐⭐
+        renderTeams(teams, currentTeam);
         showTeamPopup(teams, currentTeam);
+        
         document.getElementById("answerInput").value = "";
         document.getElementById("timer").textContent = timerLimit + "s";
         clearInterval(timerInterval);
@@ -244,6 +208,7 @@ function handleSkip() {
     checkGameEnd();
     showCorrectAnswer();
   }
+  updateButtonVisibility(); 
 }
 
 function handleContinue() {
@@ -253,8 +218,10 @@ function handleContinue() {
     currentQuestion.q.answeredBy = null;
     onBoardUpdate();
     checkGameEnd();
+    
+    // ⭐⭐ Team wechseln und UI aktualisieren ⭐⭐
     currentTeam = nextStartingTeam;
-    onTeamsUpdate();
+    renderTeams(teams, currentTeam);
     showTeamPopup(teams, currentTeam);
     return;
   }
@@ -276,38 +243,50 @@ function handleContinue() {
     if (alreadyTriedTeams.length >= teams.length) {
       showCorrectAnswer();
     } else {
+      let newTeam = currentTeam;
       do {
-        currentTeam = (currentTeam + 1) % teams.length;
-      } while (alreadyTriedTeams.includes(currentTeam));
-      onTeamsUpdate();
+        newTeam = (newTeam + 1) % teams.length;
+      } while (alreadyTriedTeams.includes(newTeam));
+      
+      // ⭐⭐ Team wechseln und UI aktualisieren ⭐⭐
+      currentTeam = newTeam;
+      renderTeams(teams, currentTeam);
       showTeamPopup(teams, currentTeam);
+      
       closeModal();
       showModal(currentQuestion.q.question, timerLimit);
     }
   } else {
+    // ⭐⭐ Team wechseln und UI aktualisieren ⭐⭐
+    currentTeam = nextStartingTeam;
+    renderTeams(teams, currentTeam);
+    showTeamPopup(teams, currentTeam);
+    
     closeModal();
     currentQuestion.q.answered = true;
     currentQuestion.q.answeredBy = null;
     onBoardUpdate();
     checkGameEnd();
-    currentTeam = nextStartingTeam;
-    onTeamsUpdate();
-    showTeamPopup(teams, currentTeam);
   }
 }
 
 function handleMarkCorrect() {
   if (!waitForGamemaster) return;
+  
   if (minuspunkte && alreadyTriedTeams.includes(currentTeam) && !dochRichtigUsed) {
     teams[currentTeam].score += Math.floor(currentQuestion.q.points / 2);
   }
+  
   teams[currentTeam].score += currentQuestion.q.points;
   currentQuestion.q.answered = true;
   currentQuestion.q.answeredBy = currentTeam;
   closeModal();
+  
+  // ⭐⭐ Team wechseln und UI SOFORT aktualisieren ⭐⭐
   currentTeam = nextStartingTeam;
-  onTeamsUpdate();
+  renderTeams(teams, currentTeam);
   showTeamPopup(teams, currentTeam);
+  
   onBoardUpdate();
   checkGameEnd();
   dochRichtigUsed = true;
@@ -332,3 +311,42 @@ function checkGameEnd() {
     onGameEnd();
   }
 }
+
+
+function updateButtonVisibility() {
+  const submitBtn = document.getElementById("submitAnswer");
+  const skipBtn = document.getElementById("skipAnswer");
+  const continueBtn = document.getElementById("continueBtn");
+  const markCorrectBtn = document.getElementById("markCorrectBtn");
+  
+  // Grundzustand: Antwort prüfen/Überspringen sichtbar, andere ausgeblendet
+  submitBtn.style.display = "inline-block";
+  skipBtn.style.display = "inline-block";
+  continueBtn.style.display = "none";
+  markCorrectBtn.style.display = "none";
+
+  // Nach Antwortprüfung
+  if (waitForGamemaster) {
+    submitBtn.style.display = "none";
+    skipBtn.style.display = "none";
+    continueBtn.style.display = "inline-block";
+    
+    // "Doch richtig!" nur anzeigen wenn:
+    // - Nicht alle Teams versucht haben
+    // - Timer nicht abgelaufen ist
+    if (!timerExpired && alreadyTriedTeams.length < teams.length) {
+      markCorrectBtn.style.display = "inline-block";
+    }
+  }
+
+  // Wenn alle Teams falsch lagen
+  if (alreadyTriedTeams.length >= teams.length) {
+    markCorrectBtn.style.display = "none";
+  }
+
+  // Überspringen-Button spezielle Regeln
+  if (!allowSkip || (currentTeam === selectingTeam && alreadyTriedTeams.length === 0)) {
+    skipBtn.style.display = "none";
+  }
+}
+
