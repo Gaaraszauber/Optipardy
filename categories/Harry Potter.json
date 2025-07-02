@@ -7,24 +7,24 @@
       "points": 100
     },
     {
-      "question": "Welche Lehrkraft aus Hogwarts ist ein Animagus?",
-      "answer": "Minerva McGonagall",
-      "points": 300
-    },
-    {
-      "question": "Was schlüpfte aus dem Ei, welches Hagrid beim Glücksspiel gewonnen hat?",
-      "answer": "Ein Norwegischer Stachelbuckel",
-      "points": 500
-    },
-    {
       "question": "Wo lebte Harry bevor er nach Hogwarts kam?",
       "answer": "Ligusterweg Nr. 4",
       "points": 200
     },
     {
+      "question": "Welche Lehrkraft aus Hogwarts ist ein Animagus?",
+      "answer": "Minerva McGonagall",
+      "points": 300
+    },
+    {
       "question": "Wie lautet der volle Name von Albus Dumbledore?",
       "answer": "Albus Percival Wulfric Brian Dumbledore",
       "points": 400
+    },
+    {
+      "question": "Was schlüpfte aus dem Ei, welches Hagrid beim Glücksspiel gewonnen hat?",
+      "answer": "Ein norwegischer Stachelbuckel",
+      "points": 500
     }
   ]
 }

@@ -2,8 +2,8 @@
   "name": "Emmetropie",
   "questions": [
     {
-      "question": "Ein anderes Wort für Emmetrop?",
-      "answer": "Rechtsichtig",
+      "question": "Ein anderes Wort für emmetrop?",
+      "answer": "rechtsichtig",
       "points": 100
     },
     {
@@ -13,17 +13,17 @@
     },
     {
       "question": "Wann ist ein Auge emmetrop?",
-      "answer": "Wenn es Objekte im unendlichen ohne Akkommodation scharf in der Netzhaut abbildet.",
+      "answer": "Wenn es Objekte im Unendlichen ohne Akkommodation scharf in der Netzhaut abbildet",
       "points": 300
     },
     {
       "question": "Warum ist Presbyopie keine Fehlsichtigkeit?",
-      "answer": "Die Presbyopie bezieht sich auf den Nahpunkt. Die Fehlsichtigkeiten sind durch den Fernpunkt definiert.",
+      "answer": "Die Presbyopie bezieht sich auf den Nahpunkt. Die Fehlsichtigkeiten sind durch den Fernpunkt definiert",
       "points": 400
     },
     {
       "question": "Ab welchem Lebensjahr nimmt das Akkommodationsgebiet ab?",
-      "answer": "Etwa ab dem 10. Lebensjahr.",
+      "answer": "Etwa ab dem 10. Lebensjahr",
       "points": 500
     }
   ]
