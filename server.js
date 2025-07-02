@@ -45,7 +45,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.get('/game', basicAuth, (req, res) => {
+app.get('/game', (req, res) => {
   console.log(`[${getTimestamp()}] Serving game.html`);
   res.sendFile(path.join(__dirname, 'public', 'game.html'));
 });

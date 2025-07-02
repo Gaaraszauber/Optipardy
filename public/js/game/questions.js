@@ -10,6 +10,8 @@ let alreadyTriedTeams = [];
 let currentQuestion = null;
 let selectingTeam = 0;
 let nextStartingTeam = 0;
+let isShowingAnswer = false;
+
 
 // State-Variablen
 let kategorien = [];
@@ -212,14 +214,15 @@ function handleSkip() {
 }
 
 function handleContinue() {
-  if (document.getElementById("correctAnswer").style.display === "block") {
+  // Wenn die Lösung gerade angezeigt wird, Modal schließen und alles wie gehabt
+  if (isShowingAnswer) {
+    isShowingAnswer = false;
     closeModal();
     currentQuestion.q.answered = true;
     currentQuestion.q.answeredBy = null;
     onBoardUpdate();
     checkGameEnd();
-    
-    // ⭐⭐ Team wechseln und UI aktualisieren ⭐⭐
+
     currentTeam = nextStartingTeam;
     renderTeams(teams, currentTeam);
     showTeamPopup(teams, currentTeam);
@@ -241,34 +244,60 @@ function handleContinue() {
 
   if (allowOthers) {
     if (alreadyTriedTeams.length >= teams.length) {
-      showCorrectAnswer();
+      // Alle Teams haben versucht: erst Lösung zeigen, dann Modal schließen
+      if (!isShowingAnswer) {
+        showCorrectAnswer();
+        isShowingAnswer = true;
+        return;
+      }
+      // Wenn Lösung schon gezeigt wurde, Modal schließen und weiter
+      isShowingAnswer = false;
+      closeModal();
+      currentQuestion.q.answered = true;
+      currentQuestion.q.answeredBy = null;
+      onBoardUpdate();
+      checkGameEnd();
+
+      currentTeam = nextStartingTeam;
+      renderTeams(teams, currentTeam);
+      showTeamPopup(teams, currentTeam);
+      return;
     } else {
       let newTeam = currentTeam;
       do {
         newTeam = (newTeam + 1) % teams.length;
       } while (alreadyTriedTeams.includes(newTeam));
-      
-      // ⭐⭐ Team wechseln und UI aktualisieren ⭐⭐
+
       currentTeam = newTeam;
       renderTeams(teams, currentTeam);
       showTeamPopup(teams, currentTeam);
-      
+
       closeModal();
       showModal(currentQuestion.q.question, timerLimit);
+      return;
     }
   } else {
-    // ⭐⭐ Team wechseln und UI aktualisieren ⭐⭐
+    // allowOthers == false: erst Lösung zeigen, dann Modal schließen
+    if (!isShowingAnswer) {
+      showCorrectAnswer();
+      isShowingAnswer = true;
+      return;
+    }
+    // Wenn Lösung schon gezeigt wurde, Modal schließen und weiter
+    isShowingAnswer = false;
     currentTeam = nextStartingTeam;
     renderTeams(teams, currentTeam);
     showTeamPopup(teams, currentTeam);
-    
+
     closeModal();
     currentQuestion.q.answered = true;
     currentQuestion.q.answeredBy = null;
     onBoardUpdate();
     checkGameEnd();
+    return;
   }
 }
+
 
 function handleMarkCorrect() {
   if (!waitForGamemaster) return;

@@ -57,12 +57,10 @@ function renderTeamSettings() {
 }
 
 export function renderTeams(teamsArr, currentIdx) {
-  console.log("Aktuelles Team:", currentIdx); // Debug
   const el = document.getElementById("teams");
   el.innerHTML = "";
   teamsArr.forEach((team, idx) => {
     const isActive = idx === currentIdx;
-    console.log(`Team ${idx}: ${team.name} | Aktiv? ${isActive}`); // Debug
     const badge = document.createElement("div");
     badge.className = "team-badge" + (isActive ? " active" : "");
     badge.innerHTML = `
